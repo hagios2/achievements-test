@@ -28,11 +28,17 @@ class AchievementService
     {
         $user = User::find(1);
 
-        $user->addLesson($lesson);
+        $already_watched = $user->watched()->where(['lesson_id' => $lesson->id])->count();
 
-        $this->lessonCount($user);
+        if ($already_watched === 0) {
+            $user->addLesson($lesson);
 
-        return response()->json(['message' => 'user watched lesson added']);
+            $this->lessonCount($user);
+
+            return response()->json(['message' => 'user watched lesson added']);
+        } else {
+            return response()->json(['message' => 'lesson already watched']);
+        }
     }
 
     public function commentsCount(User $user)
@@ -49,8 +55,6 @@ class AchievementService
     public function lessonCount(User $user)
     {
         $lessonCounts = $user->watched()->count();
-
-        Log::info($lessonCounts);
 
         //check if count of the user's watched lesson is in the comment_achievement_level array
         if (in_array($lessonCounts, array_keys(Lesson::LESSON_ACHIEVEMENT_LEVEL))) {
