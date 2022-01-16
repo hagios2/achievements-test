@@ -3,7 +3,9 @@
 namespace App\Services;
 
 
+use App\Events\AchievementUnlockEvent;
 use App\Http\Requests\AddCommentRequest;
+use App\Models\Comment;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +18,8 @@ class AchievementService
 
         $comment = $user->addComment($request->validated());
 
+        $this->commentsCount($user);
+
         return response()->json(['message' => 'comment saved', 'new_comment' => $comment], 201);
     }
 
@@ -27,4 +31,15 @@ class AchievementService
 
         return response()->json(['message' => 'user watched lesson added']);
     }
+
+    public function commentsCount(User $user)
+    {
+        $commentCounts = $user->comments()->count();
+
+        //check if count of the user's comment is in the comment_achievement_level array
+        if (in_array($commentCounts, array_keys(Comment::COMMENT_ACHIEVEMENT_LEVEL))) {
+            AchievementUnlockEvent::dispatch($user, Comment::COMMENT_ACHIEVEMENT_LEVEL[$commentCounts]);
+        }
+    }
+
 }

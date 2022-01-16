@@ -80,4 +80,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Lesson::class)->wherePivot('watched', true);
     }
+
+    public function achievement(): HasMany
+    {
+        return $this->hasMany(Achievement::class);
+    }
+
+    public function addAchievement($achievement): Model
+    {
+        return $this->achievement()->create($achievement);
+    }
 }
