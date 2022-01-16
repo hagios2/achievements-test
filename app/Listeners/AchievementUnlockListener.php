@@ -30,7 +30,7 @@ class AchievementUnlockListener
     {
         $event->user->addAchievement([
             'achievement_name' => $event->achievement_name,
-            'achievement_type' => Str::contains('Watched', $event->achievement_name) ? Achievement::LESSON_TYPE : Achievement::COMMENT_TYPE
+            'achievement_type' => Str::contains($event->achievement_name, 'Watched') ? Achievement::LESSON_TYPE : Achievement::COMMENT_TYPE
         ]);
     }
 }

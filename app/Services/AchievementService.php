@@ -9,6 +9,7 @@ use App\Models\Comment;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class AchievementService
 {
@@ -27,7 +28,9 @@ class AchievementService
     {
         $user = User::find(1);
 
-        $user->addlesson($lesson);
+        $user->addLesson($lesson);
+
+        $this->lessonCount($user);
 
         return response()->json(['message' => 'user watched lesson added']);
     }
@@ -38,7 +41,21 @@ class AchievementService
 
         //check if count of the user's comment is in the comment_achievement_level array
         if (in_array($commentCounts, array_keys(Comment::COMMENT_ACHIEVEMENT_LEVEL))) {
+            //fire achievement unlock event
             AchievementUnlockEvent::dispatch($user, Comment::COMMENT_ACHIEVEMENT_LEVEL[$commentCounts]);
+        }
+    }
+
+    public function lessonCount(User $user)
+    {
+        $lessonCounts = $user->watched()->count();
+
+        Log::info($lessonCounts);
+
+        //check if count of the user's watched lesson is in the comment_achievement_level array
+        if (in_array($lessonCounts, array_keys(Lesson::LESSON_ACHIEVEMENT_LEVEL))) {
+            //fire achievement unlock event
+            AchievementUnlockEvent::dispatch($user, Lesson::LESSON_ACHIEVEMENT_LEVEL[$lessonCounts]);
         }
     }
 

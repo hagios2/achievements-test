@@ -68,9 +68,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Lesson::class);
     }
 
-    public function addLesson($lesson): Model
+    public function addLesson($lesson)
     {
-        return $this->lessons()->create($lesson);
+        $this->watched()->attach($lesson, ['watched' => true]);
     }
 
     /**

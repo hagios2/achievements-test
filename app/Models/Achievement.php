@@ -13,7 +13,7 @@ class Achievement extends Model
     //lesson Watched Achievements
     public const FIRST_LESSON_WATCHED = 'First Lesson Watched';
     public const FIVE_LESSONS_WATCHED = '5 Lessons Watched';
-    public const TEN_LESSONS_WATCHED = '10 lessons watched';
+    public const TEN_LESSONS_WATCHED = '10 lessons Watched';
     public const TWENTY_FIVE_LESSONS_WATCHED = '25 Lessons Watched';
     public const FIFTY_LESSONS_WATCHED = '50 Lessons Watched';
 
