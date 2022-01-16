@@ -90,4 +90,14 @@ class User extends Authenticatable
     {
         return $this->achievement()->create($achievement);
     }
+
+    public function badge(): HasMany
+    {
+        return $this->hasMany(Badge::class);
+    }
+
+    public function addBadge($badge): Model
+    {
+        return $this->badge()->create($badge);
+    }
 }

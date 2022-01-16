@@ -2,14 +2,12 @@
 
 namespace App\Services;
 
-
 use App\Events\AchievementUnlockEvent;
 use App\Http\Requests\AddCommentRequest;
 use App\Models\Comment;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 class AchievementService
 {
