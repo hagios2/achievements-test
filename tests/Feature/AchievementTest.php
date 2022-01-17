@@ -15,6 +15,8 @@ class AchievementTest extends TestCase
 
     public $user;
 
+    public $lesson;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -74,9 +76,7 @@ class AchievementTest extends TestCase
 
     public function test_unauthenticated_user_cant_watch_a_lesson()
     {
-        $data = ['body' => $this->faker->text];
-
-        $response = $this->json('POST','/api/user/add/comment', $data, [
+        $response = $this->json('POST',"/api/user/watch/{$this->lesson->id}/lesson", [], [
             'accept' => 'application/json',
             'Content-Type' => 'application/json'
         ]);
