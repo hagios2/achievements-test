@@ -21,11 +21,11 @@ class AchievementService
     {
         $user = auth()->user();
 
-        $comment = $user->addComment($request->validated());
+        $user->addComment($request->validated());
 
         $this->commentsCount($user);
 
-        return response()->json(['message' => 'comment saved', 'new_comment' => $comment], 201);
+        return response()->json(['message' => 'comment saved'], 201);
     }
 
     public function watchLesson(Lesson $lesson): JsonResponse
