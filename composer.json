@@ -14,6 +14,7 @@
         "tymon/jwt-auth": "1.0.x-dev"
     },
     "require-dev": {
+        "brainmaestro/composer-git-hooks": "^2.8",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "friendsofphp/php-cs-fixer": "^3.5",
@@ -37,6 +38,7 @@
         }
     },
     "scripts": {
+        "cghooks": "vendor/bin/cghooks",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -51,6 +53,14 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "hooks": {
+            "pre-commit": [
+                "/usr/bin/php git -pre-commit"
+            ],
+            "pre-push": [
+            ],
+            "post-merge": "composer update"
         }
     },
     "config": {
