@@ -66,5 +66,4 @@ class AchievementService
             AchievementUnlockEvent::dispatch($user, Lesson::LESSON_ACHIEVEMENT_LEVEL[$lessonCounts]);
         }
     }
-
 }
