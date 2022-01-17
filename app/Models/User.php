@@ -100,4 +100,37 @@ class User extends Authenticatable
     {
         return $this->badge()->create($badge);
     }
+
+    public function currentBadge()
+    {
+        $current_badge = $this->badge()->latest()->first();
+
+        return $current_badge?->badge_name ?? Badge::USER_BADGE_LEVEL[0];
+    }
+
+    public function nextBadge()
+    {
+        $current_badge = $this->currentBadge();
+
+        $current_badge_index = array_search($current_badge, array_values(Badge::USER_BADGE_LEVEL));
+
+        $next_badge_index = $current_badge_index + 1;
+
+        if (array_key_exists($next_badge_index , array_values(Badge::USER_BADGE_LEVEL))) {
+            return array_values(Badge::USER_BADGE_LEVEL)[$next_badge_index];
+        }
+    }
+
+    public function remainingToUnlockNextBadge(): bool|int|string
+    {
+        $next_badge = $this->nextBadge();
+
+        if ($next_badge) {
+            $number_of_achievement_to_next_level = array_search($next_badge, Badge::USER_BADGE_LEVEL);
+
+            return $number_of_achievement_to_next_level - $this->achievement()->count();
+        } else {
+            return 0;
+        }
+    }
 }

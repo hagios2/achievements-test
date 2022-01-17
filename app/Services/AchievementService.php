@@ -35,15 +35,15 @@ class AchievementService
 
         $already_watched = $user->watched()->where(['lesson_id' => $lesson->id])->count();
 
-        if ($already_watched === 0) {
+//        if ($already_watched === 0) {
             $user->addLesson($lesson);
 
             $this->lessonCount($user);
 
             return response()->json(['message' => 'user watched lesson added']);
-        } else {
-            return response()->json(['message' => 'lesson already watched']);
-        }
+//        } else {
+//            return response()->json(['message' => 'lesson already watched']);
+//        }
     }
 
     public function commentsCount(User $user)
