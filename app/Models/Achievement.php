@@ -93,8 +93,10 @@ class Achievement extends Model
 
     public static function getNextAchievement(Achievement $achievement, array $achievement_level_array)
     {
-        $current_achievement_index = array_search($achievement->achievement_name,
-            array_values($achievement_level_array));
+        $current_achievement_index = array_search(
+            $achievement->achievement_name,
+            array_values($achievement_level_array)
+        );
 
         $next_achievement_index = $current_achievement_index+1;
 
