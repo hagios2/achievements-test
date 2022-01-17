@@ -61,33 +61,37 @@ class Achievement extends Model
             $achievement = self::where([['user_id', '=', $user->id], ['achievement_type', '=', $achievement_type]])
                 ->latest()->first(['achievement_name', 'achievement_type']);
 
-            if ($achievement) {
-                $next_achievement = match ($achievement->achievement_type) {
-                    'comment' => self::getNextCommentAchievement($achievement),
-                    'lesson' => self::getNextLessonAchievement($achievement),
-                };
+            $next_achievement = match ($achievement_type) {
+                'comment' => self::getNextCommentAchievement($achievement),
+                'lesson' => self::getNextLessonAchievement($achievement),
+            };
 
-                $next_achievement_collection->push($next_achievement);
-            }
+            $next_achievement_collection->push($next_achievement);
         }
 
-        if ($next_achievement_collection->count() > 0) {
+//        if ($next_achievement_collection->count() > 0) {
             return $next_achievement_collection;
-        } else{
-            return [Achievement::FIRST_LESSON_WATCHED, Achievement::FIRST_COMMENT_WRITTEN];
+//        } else{
+//            return [Achievement::FIRST_LESSON_WATCHED, Achievement::FIRST_COMMENT_WRITTEN];
+//        }
+    }
+
+    public static function getNextCommentAchievement(?Achievement $achievement)
+    {
+        if ($achievement) {
+            return self::getNextAchievement($achievement, Comment::COMMENT_ACHIEVEMENT_LEVEL);
+        } else {
+            return Achievement::FIRST_COMMENT_WRITTEN;
         }
-
-
     }
 
-    public static function getNextCommentAchievement(Achievement $achievement)
+    public static function getNextLessonAchievement(?Achievement $achievement)
     {
-        return self::getNextAchievement($achievement, Comment::COMMENT_ACHIEVEMENT_LEVEL);
-    }
-
-    public static function getNextLessonAchievement(Achievement $achievement)
-    {
-        return self::getNextAchievement($achievement, Lesson::LESSON_ACHIEVEMENT_LEVEL);
+        if ($achievement) {
+            return self::getNextAchievement($achievement, Lesson::LESSON_ACHIEVEMENT_LEVEL);
+        } else {
+            return Achievement::FIRST_LESSON_WATCHED;
+        }
     }
 
     public static function getNextAchievement(Achievement $achievement, array $achievement_level_array)
@@ -96,8 +100,8 @@ class Achievement extends Model
 
         $next_achievement_index = $current_achievement_index++;
 
-        if ($current_achievement_index && in_array($next_achievement_index , array_keys($achievement_level_array))) {
-            return $achievement_level_array[$next_achievement_index];
+        if ($current_achievement_index && in_array($next_achievement_index , array_values($achievement_level_array))) {
+            return array_values($achievement_level_array)[$next_achievement_index];
         } else {
             return 'N/A';
         }
