@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @method static where(array $array)
@@ -66,14 +67,12 @@ class Achievement extends Model
                 'lesson' => self::getNextLessonAchievement($achievement),
             };
 
-            $next_achievement_collection->push($next_achievement);
+            if ($next_achievement) {
+                $next_achievement_collection->push($next_achievement);
+            }
         }
 
-//        if ($next_achievement_collection->count() > 0) {
-            return $next_achievement_collection;
-//        } else{
-//            return [Achievement::FIRST_LESSON_WATCHED, Achievement::FIRST_COMMENT_WRITTEN];
-//        }
+        return $next_achievement_collection;
     }
 
     public static function getNextCommentAchievement(?Achievement $achievement)
@@ -98,12 +97,10 @@ class Achievement extends Model
     {
         $current_achievement_index = array_search($achievement->achievement_name, array_values($achievement_level_array));
 
-        $next_achievement_index = $current_achievement_index++;
+        $next_achievement_index = $current_achievement_index+1;
 
-        if ($current_achievement_index && in_array($next_achievement_index , array_values($achievement_level_array))) {
+        if (array_key_exists($next_achievement_index , array_values($achievement_level_array))) {
             return array_values($achievement_level_array)[$next_achievement_index];
-        } else {
-            return 'N/A';
         }
     }
 }
