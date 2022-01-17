@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Log;
 
 /**
  * @method static where(array $array)
@@ -51,14 +50,13 @@ class Achievement extends Model
         });
     }
 
-    public static function nextAchievementToUnlock(User $user)
+    public static function nextAchievementToUnlock(User $user): \Illuminate\Support\Collection
     {
         $achievement_types = [Achievement::LESSON_TYPE, Achievement::COMMENT_TYPE];
 
         $next_achievement_collection = collect();
 
-        foreach ($achievement_types as $achievement_type)
-        {
+        foreach ($achievement_types as $achievement_type) {
             $achievement = self::where([['user_id', '=', $user->id], ['achievement_type', '=', $achievement_type]])
                 ->latest()->first(['achievement_name', 'achievement_type']);
 
@@ -95,11 +93,12 @@ class Achievement extends Model
 
     public static function getNextAchievement(Achievement $achievement, array $achievement_level_array)
     {
-        $current_achievement_index = array_search($achievement->achievement_name, array_values($achievement_level_array));
+        $current_achievement_index = array_search($achievement->achievement_name,
+            array_values($achievement_level_array));
 
         $next_achievement_index = $current_achievement_index+1;
 
-        if (array_key_exists($next_achievement_index , array_values($achievement_level_array))) {
+        if (array_key_exists($next_achievement_index, array_values($achievement_level_array))) {
             return array_values($achievement_level_array)[$next_achievement_index];
         }
     }

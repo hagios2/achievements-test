@@ -9,7 +9,6 @@ use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -234,4 +233,23 @@ class AchievementTest extends TestCase
             $lesson_counter += 1;
         }
     }
+
+    public function test_viewing_a_users_achievements()
+    {
+        $response = $this->json('GET',"/api/users/{$this->user->id}/achievements", [], [
+            'Authorization' => "Bearer {$this->token}",
+            'accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'unlocked_achievements',
+                'next_available_achievements',
+                'current_badge',
+                'next_badge',
+                'remaining_to_unlock_next_badge'
+            ]);
+    }
+
 }

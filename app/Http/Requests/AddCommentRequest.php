@@ -22,7 +22,7 @@ class AddCommentRequest extends FormRequest
      *
      * @return array
      */
-     public function rules(): array
+    public function rules(): array
     {
         return [
             'body' => ['required', 'string']

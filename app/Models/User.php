@@ -16,7 +16,10 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
+
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -47,8 +50,6 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    use Notifiable;
 
     // Rest omitted for brevity
 
@@ -141,7 +142,7 @@ class User extends Authenticatable implements JWTSubject
 
         $next_badge_index = $current_badge_index + 1;
 
-        if (array_key_exists($next_badge_index , array_values(Badge::USER_BADGE_LEVEL))) {
+        if (array_key_exists($next_badge_index, array_values(Badge::USER_BADGE_LEVEL))) {
             return array_values(Badge::USER_BADGE_LEVEL)[$next_badge_index];
         }
     }

@@ -18,7 +18,7 @@ class AchievementsController extends Controller
 
     public function index(User $user): AchievementResponse
     {
-       return $this->achievementService->index($user);
+        return $this->achievementService->index($user);
     }
 
     public function addComment(AddCommentRequest $request): JsonResponse
