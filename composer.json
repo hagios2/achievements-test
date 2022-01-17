@@ -56,7 +56,7 @@
         },
         "hooks": {
             "pre-commit": [
-                "/usr/bin/php git -pre-commit"
+                "/usr/bin/php git-pre-commit"
             ],
             "pre-push": [
             ],
