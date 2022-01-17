@@ -15,4 +15,14 @@ class AuthController extends Controller
     {
         return $this->authService->login();
     }
+
+    public function logout(): \Illuminate\Http\JsonResponse
+    {
+        return $this->authService->logout();
+    }
+
+    public function refresh(): \Illuminate\Http\JsonResponse
+    {
+        return $this->authService->refresh();
+    }
 }

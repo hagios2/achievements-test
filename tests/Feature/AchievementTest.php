@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Achievement;
+use App\Models\Badge;
 use App\Models\Comment;
 use App\Models\Lesson;
 use App\Models\User;
@@ -197,6 +198,37 @@ class AchievementTest extends TestCase
                 $this->assertDatabaseHas('achievements', [
                     'achievement_name' => Lesson::LESSON_ACHIEVEMENT_LEVEL[$lesson_counter],
                     'achievement_type' => Achievement::LESSON_TYPE
+                ]);
+            }
+            $lesson_counter += 1;
+        }
+    }
+
+    public function test_badges_are_added_for_enough_user_achievements()
+    {
+        $lessons = Lesson::factory(50)->create();
+
+        $lesson_counter = 1;
+
+        foreach ($lessons as $lesson) {
+            $response = $this->json('POST',"/api/user/watch/{$lesson->id}/lesson", [], [
+                'Authorization' => "Bearer {$this->token}",
+                'accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ]);
+            $response->assertStatus(200);
+
+             $achievement_count = Achievement::query()->where('user_id', $this->user->id)->count();
+
+            if ($achievement_count < 4) {
+                $this->assertDatabaseHas('badges', [
+                    'badge_name' => Badge::USER_BADGE_LEVEL[0],
+                    'user_id' => $this->user->id
+                ]);
+            } else if (in_array($achievement_count, array_keys(Badge::USER_BADGE_LEVEL))) {
+                $this->assertDatabaseHas('badges', [
+                    'badge_name' => Badge::USER_BADGE_LEVEL[$achievement_count],
+                    'user_id' => $this->user->id
                 ]);
             }
             $lesson_counter += 1;
