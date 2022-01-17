@@ -12,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 
 class AchievementService
 {
-
     public function index(User $user): AchievementResponse
     {
         return new AchievementResponse($user);
@@ -20,7 +19,7 @@ class AchievementService
 
     public function addComment(AddCommentRequest $request): JsonResponse
     {
-        $user = User::find(1);
+        $user = auth()->user();
 
         $comment = $user->addComment($request->validated());
 
@@ -31,7 +30,7 @@ class AchievementService
 
     public function watchLesson(Lesson $lesson): JsonResponse
     {
-        $user = User::find(1);
+        $user = auth()->user();
 
         $already_watched = $user->watched()->where(['lesson_id' => $lesson->id])->count();
 

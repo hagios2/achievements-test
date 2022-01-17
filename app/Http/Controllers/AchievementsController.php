@@ -11,11 +11,9 @@ use Illuminate\Http\JsonResponse;
 
 class AchievementsController extends Controller
 {
-    private AchievementService $achievementService;
-
-    public function __construct(AchievementService $achievementService)
+    public function __construct(protected AchievementService $achievementService)
     {
-        $this->achievementService = $achievementService;
+        $this->middleware('auth:api');
     }
 
     public function index(User $user): AchievementResponse
