@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\AchievementUnlockEvent;
 use App\Http\Requests\AddCommentRequest;
+use App\Http\Resources\AchievementResponse;
 use App\Models\Comment;
 use App\Models\Lesson;
 use App\Models\User;
@@ -11,6 +12,12 @@ use Illuminate\Http\JsonResponse;
 
 class AchievementService
 {
+
+    public function index(User $user): AchievementResponse
+    {
+        return new AchievementResponse($user);
+    }
+
     public function addComment(AddCommentRequest $request): JsonResponse
     {
         $user = User::find(1);

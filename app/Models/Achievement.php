@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @method static where(array $array)
+ */
 class Achievement extends Model
 {
     use HasFactory;
@@ -30,9 +34,72 @@ class Achievement extends Model
 
     protected $fillable = ['achievement_name', 'achievement_type', 'user_id'];
 
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public static function unlockedAchievements(User $user): Collection|\Illuminate\Support\Collection|array|null
+    {
+        $achievements = self::query()
+            ->where('user_id', '=', $user->id)
+            ->get(['achievement_name']);
+
+        return $achievements?->map(function ($achievement) {
+            return $achievement->achievement_name;
+        });
+    }
+
+    public static function nextAchievementToUnlock(User $user)
+    {
+        $achievement_types = [Achievement::LESSON_TYPE, Achievement::COMMENT_TYPE];
+
+        $next_achievement_collection = collect();
+
+        foreach ($achievement_types as $achievement_type)
+        {
+            $achievement = self::where([['user_id', '=', $user->id], ['achievement_type', '=', $achievement_type]])
+                ->latest()->first(['achievement_name', 'achievement_type']);
+
+            if ($achievement) {
+                $next_achievement = match ($achievement->achievement_type) {
+                    'comment' => self::getNextCommentAchievement($achievement),
+                    'lesson' => self::getNextLessonAchievement($achievement),
+                };
+
+                $next_achievement_collection->push($next_achievement);
+            }
+        }
+
+        if ($next_achievement_collection->count() > 0) {
+            return $next_achievement_collection;
+        } else{
+            return [Achievement::FIRST_LESSON_WATCHED, Achievement::FIRST_COMMENT_WRITTEN];
+        }
+
+
+    }
+
+    public static function getNextCommentAchievement(Achievement $achievement)
+    {
+        return self::getNextAchievement($achievement, Comment::COMMENT_ACHIEVEMENT_LEVEL);
+    }
+
+    public static function getNextLessonAchievement(Achievement $achievement)
+    {
+        return self::getNextAchievement($achievement, Lesson::LESSON_ACHIEVEMENT_LEVEL);
+    }
+
+    public static function getNextAchievement(Achievement $achievement, array $achievement_level_array)
+    {
+        $current_achievement_index = array_search($achievement->achievement_name, array_values($achievement_level_array));
+
+        $next_achievement_index = $current_achievement_index++;
+
+        if ($current_achievement_index && in_array($next_achievement_index , array_keys($achievement_level_array))) {
+            return $achievement_level_array[$next_achievement_index];
+        } else {
+            return 'N/A';
+        }
     }
 }

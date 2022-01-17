@@ -23,3 +23,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('user/add/comment', [AchievementsController::class, 'addComment']);
 
 Route::post('user/watch/{lesson}/lesson', [AchievementsController::class, 'watchLesson']);
+
+Route::get('/users/{user}/achievements', [AchievementsController::class, 'index']);
