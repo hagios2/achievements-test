@@ -29,7 +29,6 @@ jobs:
         run: |
           mkdir -p database
           touch database/database.sqlite
-          php artisan migrate
 
       - name: Generate key
         run: php artisan key:generate
@@ -38,4 +37,7 @@ jobs:
         run: php artisan jwt:secret
 
       - name: Execute tests Feature tests via PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
         run: php artisan test
