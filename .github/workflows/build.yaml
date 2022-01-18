@@ -19,8 +19,8 @@ jobs:
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-      - name: Copy .env.testing
-        run: php -r "file_exists('.env.testing') || copy('.env.example', '.env.testing');"
+      - name: Copy .env.example.testing
+        run: php -r "file_exists('.env.example.testing') || copy('.env.example', '.env.example.testing');"
 
       - name: Install Dependencies
         run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -33,11 +33,15 @@ jobs:
       - name: Generate key
         run: php artisan key:generate
 
-      - name: Generate key
-        run: php artisan jwt:secret
+#      - name: Generate jwt secret for testing
+#        run: php artisan jwt:secret
+
+      - name: Generate jwt secret for testing
+        run: php artisan jwt:secret --env=testing
 
       - name: Execute tests Feature tests via PHPUnit
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
+#        env:
+#          DB_CONNECTION: sqlite
+#          DB_DATABASE: database/database.sqlite
+#          JWT_SECRET: EyUZq5i5rFfouF5BRmDOWlV05bOswzHbtm9LTt3j2P5lXsXWlc9F7JV9vrqtTle5
         run: php artisan test
