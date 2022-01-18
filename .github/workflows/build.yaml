@@ -33,15 +33,8 @@ jobs:
       - name: Generate key
         run: php artisan key:generate
 
-#      - name: Generate jwt secret for testing
-#        run: php artisan jwt:secret
-
       - name: Generate jwt secret for testing
         run: php artisan jwt:secret --env=testing
 
       - name: Execute tests Feature tests via PHPUnit
-#        env:
-#          DB_CONNECTION: sqlite
-#          DB_DATABASE: database/database.sqlite
-#          JWT_SECRET: EyUZq5i5rFfouF5BRmDOWlV05bOswzHbtm9LTt3j2P5lXsXWlc9F7JV9vrqtTle5
         run: php artisan test
